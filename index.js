@@ -16,7 +16,7 @@ const contextMenuHide = Menu.buildFromTemplate([
 		type: 'separator'
 	}, {
 		label: 'Quit',
-		click: () => { app.quit(); }
+		click: () => { wscc.destroy(); app.quit(); }
 	}
 ])
 const contextMenuShow = Menu.buildFromTemplate([
@@ -27,7 +27,7 @@ const contextMenuShow = Menu.buildFromTemplate([
 		type: 'separator'
 	}, {
 		label: 'Quit',
-		click: () => { app.quit(); }
+		click: () => { wscc.destroy(); app.quit(); }
 	}
 ])
 
@@ -44,7 +44,6 @@ app.on('second-instance', (commandLine, workingDirectory) => {
 		if (wscc.window.isMinimized()) {
 			wscc.window.restore();
 		}
-		
 		wscc.window.show();
 		wscc.window.focus();
 	} else {
@@ -76,6 +75,7 @@ app.on('window-all-closed', function () {
 	if (process.platform !== 'darwin') {
 		app.quit()
 	}
+	app.quit()
 })
 
 app.on('activate', function () {
@@ -149,12 +149,12 @@ function createWindow() {
 	// wscc.webContents.openDevTools()
 
 	//// Emitted when the window is closed.
-	//wscc.on('closed', function () {
-	//	// Dereference the window object, usually you would store windows
-	//	// in an array if your app supports multi windows, this is the time
-	//	// when you should delete the corresponding element.
-	//	wscc = null
-	//})
+	wscc.on('closed', function () {
+		// Dereference the window object, usually you would store windows
+		// in an array if your app supports multi windows, this is the time
+		// when you should delete the corresponding element.
+		wscc = null
+	})
 
 	wscc.on('close', (event) => { 
 		event.preventDefault();
