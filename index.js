@@ -7,6 +7,30 @@ const gotTheLock = app.requestSingleInstanceLock()
 
 var wscc = null, tray = null
 
+var tray = null;
+const contextMenuHide = Menu.buildFromTemplate([
+	{
+		label: 'Hide',
+		click: () => { wscc.hide(); tray.setContextMenu(contextMenuShow); }
+	}, {
+		type: 'separator'
+	}, {
+		label: 'Quit',
+		click: () => { app.quit(); }
+	}
+])
+const contextMenuShow = Menu.buildFromTemplate([
+	 {
+		label: 'Show',
+		click: () => { wscc.show(); tray.setContextMenu(contextMenuHide); }
+	}, {
+		type: 'separator'
+	}, {
+		label: 'Quit',
+		click: () => { app.quit(); }
+	}
+])
+
 
 if (!gotTheLock) {
 	return app.quit()
@@ -20,30 +44,21 @@ app.on('second-instance', (commandLine, workingDirectory) => {
 		if (wscc.window.isMinimized()) {
 			wscc.window.restore();
 		}
+		
 		wscc.window.show();
+		wscc.window.focus();
+	} else {
+		wscc.show();
 	}
+	tray.setContextMenu(contextMenuHide)
 })
 
 //panel icon
 app.on('ready', () => {
 	tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'))
-	const contextMenu = Menu.buildFromTemplate([{
-			label: 'Hide',
-			click: () => { wscc.hide(); }
-		}, {
-			type: 'separator'
-		}, {
-			label: 'Show',
-			click: () => { wscc.show(); }
-		}, {
-			type: 'separator'
-		}, {
-			label: 'Quit',
-			click: () => { app.quit(); }
-		}
-	])
+
 	tray.setToolTip('WazApp.')
-	tray.setContextMenu(contextMenu)
+	tray.setContextMenu(contextMenuHide)
 	tray.on("double-click", function(event){
 		wscc.show();
 	})
@@ -102,8 +117,9 @@ function createWindow() {
 	wscc.setMenuBarVisibility(false);
 
 	//set user agent of browser #avoid whatsapp error on chromium browser
-	wscc.webContents.setUserAgent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36")
-	wscc.loadURL("https://web.whatsapp.com");
+	const userAgent = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36";
+	wscc.loadURL('https://web.whatsapp.com/', { userAgent });
+
 
 
 	//notifications
@@ -124,14 +140,26 @@ function createWindow() {
 		wscc.webContents.executeJavaScript(js_content);
 	})
 
+	wscc.webContents.on('new-window', (event, url) => {
+		shell.openExternal(url);
+		event.preventDefault();
+	})
+
 	// Open the DevTools.
 	// wscc.webContents.openDevTools()
 
-	// Emitted when the window is closed.
-	wscc.on('closed', function () {
-		// Dereference the window object, usually you would store windows
-		// in an array if your app supports multi windows, this is the time
-		// when you should delete the corresponding element.
-		wscc = null
-	})
+	//// Emitted when the window is closed.
+	//wscc.on('closed', function () {
+	//	// Dereference the window object, usually you would store windows
+	//	// in an array if your app supports multi windows, this is the time
+	//	// when you should delete the corresponding element.
+	//	wscc = null
+	//})
+
+	wscc.on('close', (event) => { 
+		event.preventDefault();
+		wscc.hide();
+		tray.setContextMenu(contextMenuShow);
+	});
+
 }

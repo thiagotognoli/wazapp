@@ -9,6 +9,7 @@
 	--mred: #a3525b;
 	--mgreen: #70a352;
 	--mblue: #527aa3;
+	--white: #FFFFFF;
 	--image: url(https://media.discordapp.net/attachments/310799529161129984/417408747812552715/zilesanamin.jpg);
 	--emojiOpacity: 0.75;
 	--version: "WhatsApp by Mew v1.3.0";
@@ -16,6 +17,11 @@
 	--changes: "See the changelog at: https://github.com/vednoc/onyx/releases";
 }
 
+/* Input Message Text*/
+
+._3FeAD ._3u328 {
+	color: var(--white);
+}
 
 /* Body reset. */
 
