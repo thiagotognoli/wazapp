@@ -5,9 +5,10 @@ const { app, BrowserWindow, Menu, Tray } = require('electron')
 const path = require('path')
 const gotTheLock = app.requestSingleInstanceLock()
 
-var wscc = null, tray = null
+var wscc = null;
 
-var tray = null;
+let tray = null;
+
 const contextMenuHide = Menu.buildFromTemplate([
 	{
 		label: 'Hide',
@@ -54,13 +55,6 @@ app.on('second-instance', (commandLine, workingDirectory) => {
 
 //panel icon
 app.on('ready', () => {
-	tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'))
-
-	tray.setToolTip('WazApp.')
-	tray.setContextMenu(contextMenuHide)
-	tray.on("double-click", function(event){
-		wscc.show();
-	})
 })
 
 // This method will be called when Electron has finished
@@ -141,9 +135,19 @@ function createWindow() {
 	})
 
 	wscc.webContents.on('new-window', (event, url) => {
-		shell.openExternal(url);
+		//shell.openExternal(url);
+		//event.preventDefault();
 		event.preventDefault();
+		require('electron').shell.openExternal(url);		
 	})
+
+	tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'))
+	tray.setToolTip('WazApp.')
+	tray.setContextMenu(contextMenuHide)
+	tray.on("double-click", function(event){
+		wscc.show();
+		wscc.focus();
+	});
 
 	// Open the DevTools.
 	// wscc.webContents.openDevTools()
@@ -161,5 +165,6 @@ function createWindow() {
 		wscc.hide();
 		tray.setContextMenu(contextMenuShow);
 	});
+
 
 }
