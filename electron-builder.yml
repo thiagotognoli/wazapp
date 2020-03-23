@@ -1,0 +1,5 @@
+linux:
+  target: 
+    - target: AppImage
+  icon: './assets/icons/icon-app.png'
+  category: 'Network'

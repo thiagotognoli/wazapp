@@ -7,7 +7,8 @@
 		"start": "electron .",
 		"build-linux64": "electron-packager . wscc --overwrite --asar --platform=linux --arch=x64 --icon=assets/icons/icon.png --prune=true --out=release",
 		"build-linux32": "electron-packager . wscc --overwrite --asar --platform=linux --arch=ia32 --icon=assets/icons/icon.png --prune=true --out=release",
-		"package-linux": "electron-packager . wscc --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release"
+		"package-linux": "electron-packager . wscc --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icons/png/1024x1024.png --prune=true --out=release",
+		"build": "electron-builder ."
 	},
 	"repository": {
 		"type": "git",
@@ -25,7 +26,8 @@
 	],
 	"license": "CC0-1.0",
 	"devDependencies": {
-		"electron": "^8.0.0"
+		"electron": "^8.0.0",
+		"electron-builder": "^21.2.0"
 	},
 	"dependencies": {
 		"electron-packager": "^14.0.6"
