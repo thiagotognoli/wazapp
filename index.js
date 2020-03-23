@@ -1,7 +1,7 @@
 "use strict";
 
 const fs = require('fs')
-const { app, BrowserWindow, Menu, Tray } = require('electron')
+const { app, BrowserWindow, Menu, Tray, shell } = require('electron')
 const path = require('path')
 const gotTheLock = app.requestSingleInstanceLock()
 
@@ -53,8 +53,17 @@ app.on('second-instance', (commandLine, workingDirectory) => {
 	tray.setContextMenu(contextMenuHide)
 })
 
-//panel icon
-app.on('ready', () => {
+
+//painel icon
+app.whenReady().then(() => {
+  tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'))
+  tray.setTitle('WazApp')
+  tray.setToolTip('WazApp')
+  tray.setContextMenu(contextMenuHide)
+  tray.on("double-click", function(event){
+	  wscc.show();
+	  wscc.focus();
+  });
 })
 
 // This method will be called when Electron has finished
@@ -138,16 +147,9 @@ function createWindow() {
 		//shell.openExternal(url);
 		//event.preventDefault();
 		event.preventDefault();
-		require('electron').shell.openExternal(url);		
+		shell.openExternal(url);		
 	})
 
-	tray = new Tray(path.join(__dirname, 'assets/icons/icon.png'))
-	tray.setToolTip('WazApp.')
-	tray.setContextMenu(contextMenuHide)
-	tray.on("double-click", function(event){
-		wscc.show();
-		wscc.focus();
-	});
 
 	// Open the DevTools.
 	// wscc.webContents.openDevTools()
